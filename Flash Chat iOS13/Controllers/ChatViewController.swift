@@ -66,7 +66,7 @@ class ChatViewController: UIViewController {
                 K.FStore.dateField: Date().timeIntervalSince1970
             ]) { (error) in
                 if let e = error {
-                    print("There was an issue savind data to firestore: \(e.localizedDescription)")
+                    print("There was an issue saving data to firestore: \(e.localizedDescription)")
                 } else {
                     
                     print("Successfully saved data.")
