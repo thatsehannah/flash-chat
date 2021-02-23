@@ -24,6 +24,7 @@
 		F767895025E4DAE70014845C /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F767894E25E4DAE70014845C /* MessageCell.swift */; };
 		F767895125E4DAE70014845C /* MessageCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F767894F25E4DAE70014845C /* MessageCell.xib */; };
 		F7F4158E25E5847C00876DD4 /* IQKeyboardManagerSwift in Frameworks */ = {isa = PBXBuildFile; productRef = F7F4158D25E5847C00876DD4 /* IQKeyboardManagerSwift */; };
+		F7F4159525E5C7FD00876DD4 /* UsersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F4159425E5C7FD00876DD4 /* UsersViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +48,7 @@
 		F767894B25E4D6900014845C /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		F767894E25E4DAE70014845C /* MessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageCell.swift; sourceTree = "<group>"; };
 		F767894F25E4DAE70014845C /* MessageCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MessageCell.xib; sourceTree = "<group>"; };
+		F7F4159425E5C7FD00876DD4 /* UsersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 				0B62818C235DF00B00E35CAF /* RegisterViewController.swift */,
 				0B62818E235DF01000E35CAF /* LoginViewController.swift */,
 				0B628190235DF01B00E35CAF /* ChatViewController.swift */,
+				F7F4159425E5C7FD00876DD4 /* UsersViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -275,6 +278,7 @@
 				F767894925E4D3750014845C /* Constants.swift in Sources */,
 				F767894C25E4D6900014845C /* Message.swift in Sources */,
 				0B628191235DF01B00E35CAF /* ChatViewController.swift in Sources */,
+				F7F4159525E5C7FD00876DD4 /* UsersViewController.swift in Sources */,
 				0B62818D235DF00B00E35CAF /* RegisterViewController.swift in Sources */,
 				F767895025E4DAE70014845C /* MessageCell.swift in Sources */,
 			);
