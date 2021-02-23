@@ -11,7 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ReusableCell" rowHeight="102" id="KGk-i7-Jjw" customClass="MessageCell" customModule="Flash_Chat_iOS13" customModuleProvider="target">
+        <tableViewCell userInteractionEnabled="NO" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="ReusableCell" rowHeight="102" id="KGk-i7-Jjw" customClass="MessageCell" customModule="Flash_Chat_iOS13" customModuleProvider="target">
             <rect key="frame" x="0.0" y="0.0" width="392" height="102"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
@@ -21,11 +21,18 @@
                     <stackView opaque="NO" contentMode="scaleToFill" alignment="top" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="liW-GJ-L9o">
                         <rect key="frame" x="10" y="10" width="372" height="82"/>
                         <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="YouAvatar" translatesAutoresizingMaskIntoConstraints="NO" id="V1F-60-2OL">
+                                <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="6SG-PN-WWe"/>
+                                    <constraint firstAttribute="height" constant="40" id="X8D-WP-dax"/>
+                                </constraints>
+                            </imageView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="a3V-NS-sFI">
-                                <rect key="frame" x="0.0" y="0.0" width="312" height="81"/>
+                                <rect key="frame" x="60" y="0.0" width="252" height="81"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label sdaslkfsajflkasdjlfkajsdlkfjalsd;jflas;djfla;skdjfl;aksjdf" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XGr-0Q-Rup">
-                                        <rect key="frame" x="10" y="10" width="292" height="61"/>
+                                        <rect key="frame" x="10" y="10" width="232" height="61"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" name="BrandLightPurple"/>
                                         <nil key="highlightedColor"/>
@@ -39,11 +46,11 @@
                                     <constraint firstAttribute="bottom" secondItem="XGr-0Q-Rup" secondAttribute="bottom" constant="10" id="xcW-wW-4kQ"/>
                                 </constraints>
                             </view>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="MeAvatar" translatesAutoresizingMaskIntoConstraints="NO" id="V1F-60-2OL">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="MeAvatar" translatesAutoresizingMaskIntoConstraints="NO" id="Q3w-qF-sgh">
                                 <rect key="frame" x="332" y="0.0" width="40" height="40"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="40" id="6SG-PN-WWe"/>
-                                    <constraint firstAttribute="height" constant="40" id="X8D-WP-dax"/>
+                                    <constraint firstAttribute="height" constant="40" id="8il-cH-bvf"/>
+                                    <constraint firstAttribute="width" constant="40" id="dDs-RP-QBx"/>
                                 </constraints>
                             </imageView>
                         </subviews>
@@ -59,14 +66,16 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="label" destination="XGr-0Q-Rup" id="sjj-KX-gNa"/>
+                <outlet property="leftImageView" destination="V1F-60-2OL" id="bFW-qO-BcS"/>
                 <outlet property="messageBubble" destination="a3V-NS-sFI" id="UNV-Zd-Khk"/>
-                <outlet property="rightImageView" destination="V1F-60-2OL" id="sOy-K3-fcv"/>
+                <outlet property="rightImageView" destination="Q3w-qF-sgh" id="Q2u-Z1-lmQ"/>
             </connections>
             <point key="canvasLocation" x="156.52173913043478" y="172.76785714285714"/>
         </tableViewCell>
     </objects>
     <resources>
         <image name="MeAvatar" width="36" height="36"/>
+        <image name="YouAvatar" width="36" height="36"/>
         <namedColor name="BrandLightPurple">
             <color red="0.98000001907348633" green="0.9649999737739563" blue="0.99599999189376831" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
