@@ -19,14 +19,10 @@ class AllUsersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "All Users"
+        print("User View Controller Loaded.")
         tableView.dataSource = self
-        let currentUser = Auth.auth().currentUser?.email
         
-        loadAllUsers(currentUser!)
-            
-        
-        
-        
+        loadAllUsers(currentUser)
     }
     
     
@@ -46,18 +42,19 @@ class AllUsersViewController: UIViewController {
             } else {
                 if let snapshot = querySnapshot {
                     for docs in snapshot.documents {
-                        self.users.append(docs.documentID)
+                        if docs.documentID != currentUser {
+                            self.users.append(docs.documentID)
+                        }
                     }
                     
                     DispatchQueue.main.async {
+                        print("Reloading table data...")
                         self.tableView.reloadData()
                     }
                 }
             }
         }
     }
-    
-    
 }
 
 extension AllUsersViewController: UITableViewDataSource {

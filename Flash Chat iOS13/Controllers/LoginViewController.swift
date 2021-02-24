@@ -27,4 +27,13 @@ class LoginViewController: UIViewController {
         }
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let email = emailTextfield.text {
+            let destinationVC = segue.destination as! AllUsersViewController
+            destinationVC.currentUser = email
+            print("Preparing login for segue...")
+            
+        }
+    }
+    
 }

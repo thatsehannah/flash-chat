@@ -56,7 +56,7 @@ class RegisterViewController: UIViewController {
         if let email = emailTextfield.text {
             let destinationVC = segue.destination as! AllUsersViewController
             destinationVC.currentUser = email
-            
+            print("Preparing register for segue...")
             saveToDb(email)
         }
     }
