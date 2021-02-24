@@ -10,7 +10,7 @@ import UIKit
 import Firebase
 
 class RegisterViewController: UIViewController {
-
+    
     @IBOutlet weak var emailTextfield: UITextField!
     @IBOutlet weak var passwordTextfield: UITextField!
     
@@ -34,6 +34,34 @@ class RegisterViewController: UIViewController {
         }
     }
     
+    func saveToDb(_ email: String){
+        let user = db.collection(K.FStore.usersCollectionName).document(email)
+        user.getDocument { (document, error) in
+            if let doc = document, !doc.exists {
+                self.db.collection(K.FStore.usersCollectionName).document(email).setData([
+                    "email": email,
+                    "conversations": []
+                ]) { error in
+                    if let e = error {
+                        print("There was an error saving the user: \(e)")
+                    } else {
+                        print("User successfully saved.")
+                    }
+                }
+            }
+        }
+    }
     
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let email = emailTextfield.text {
+            let destinationVC = segue.destination as! AllUsersViewController
+            destinationVC.currentUser = email
+            
+            saveToDb(email)
+        }
+    }
 }
+
+
+
+

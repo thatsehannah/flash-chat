@@ -10,23 +10,26 @@ import UIKit
 import Firebase
 
 class AllUsersViewController: UIViewController {
-
+    
     let db = Firestore.firestore()
+    var currentUser: String = ""
+    var users: [String] = []
+    @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if let currentUser = Auth.auth().currentUser?.email {
-            saveUserToDb(currentUser)
+        title = "All Users"
+        tableView.dataSource = self
+        let currentUser = Auth.auth().currentUser?.email
+        
+        loadAllUsers(currentUser!)
             
-            DispatchQueue.main.async {
-                self.loadAllUsers(currentUser)
-            }
-            
-        }
+        
+        
         
     }
     
-
+    
     @IBAction func logoutPressed(_ sender: UIBarButtonItem) {
         do {
             try Auth.auth().signOut()
@@ -43,28 +46,31 @@ class AllUsersViewController: UIViewController {
             } else {
                 if let snapshot = querySnapshot {
                     for docs in snapshot.documents {
-                        print(docs.documentID)
+                        self.users.append(docs.documentID)
+                    }
+                    
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
                     }
                 }
             }
         }
     }
     
-    func saveUserToDb(_ email: String) {
-        let user = db.collection(K.FStore.usersCollectionName).document(email)
-        user.getDocument { (document, error) in
-            if let doc = document, !doc.exists {
-                self.db.collection(K.FStore.usersCollectionName).document(email).setData([
-                    "email": email,
-                    "conversations": []
-                ]) { error in
-                    if let e = error {
-                        print("There was an error saving the user: \(e)")
-                    } else {
-                        print("User successfully saved.")
-                    }
-                }
-            }
-        }
+    
+}
+
+extension AllUsersViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return users.count
     }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let user = users[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: K.userCellIdentifier, for: indexPath)
+        cell.textLabel?.text = user
+        return cell
+    }
+    
+    
 }
