@@ -40,7 +40,7 @@ class RegisterViewController: UIViewController {
             if let doc = document, !doc.exists {
                 self.db.collection(K.FStore.usersCollectionName).document(email).setData([
                     "email": email,
-                    "conversations": []
+                    "date-created": Date().timeIntervalSince1970
                 ]) { error in
                     if let e = error {
                         print("There was an error saving the user: \(e)")

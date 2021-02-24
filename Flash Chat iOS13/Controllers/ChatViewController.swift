@@ -27,9 +27,27 @@ class ChatViewController: UIViewController {
         tableView.register(UINib(nibName: K.cellNibName, bundle: nil), forCellReuseIdentifier: K.chatCellIdentifier)
         print("Recipient: \(recipient)")
         
-        loadMessages()
+        //loadMessages()
+        loadMessageThread(withUser: recipient)
         
         //        navigationItem.hidesBackButton = true
+    }
+    
+    func loadMessageThread(withUser recipient: String){
+        if let currentUser = Auth.auth().currentUser?.email {
+            let currentThread = "\(currentUser)-\(recipient)"
+            let docRef = db.collection(K.FStore.messagesCollectionName).document(currentThread)
+            
+            docRef.getDocument { (document, error) in
+                if let document = document, document.exists {
+                    let dataDescription = document.data()
+                    print("Document data: \(dataDescription!)")
+                } else {
+                    print("Document does not exist")
+                }
+            }
+        }
+        
     }
     
     func loadMessages() {
@@ -45,8 +63,8 @@ class ChatViewController: UIViewController {
                     for doc in snapshotDocs {
                         let data = doc.data()
                         if let senderFromFs = data[K.FStore.senderField] as? String, let bodyFromFs = data[K.FStore.bodyField] as? String {
-                            let newMessage = Message(sender: senderFromFs, body: bodyFromFs)
-                            self.messages.append(newMessage)
+//                            let newMessage = Message(sender: senderFromFs, body: bodyFromFs)
+//                            self.messages.append(newMessage)
                             
                             DispatchQueue.main.async {
                                 self.tableView.reloadData()
@@ -60,25 +78,65 @@ class ChatViewController: UIViewController {
         }
     }
     
-    @IBAction func sendPressed(_ sender: UIButton) {
-        if let messageBody = messageTextfield.text, let messageSender = Auth.auth().currentUser?.email {
-            db.collection(K.FStore.messagesCollectionName).addDocument(data: [
-                K.FStore.senderField: messageSender,
-                K.FStore.bodyField: messageBody,
-                K.FStore.dateField: Date().timeIntervalSince1970
-            ]) { (error) in
-                if let e = error {
-                    print("There was an issue saving data to firestore: \(e.localizedDescription)")
-                } else {
-                    
-                    print("Successfully saved data.")
-                    
-                    DispatchQueue.main.async {
-                        self.messageTextfield.text = ""
+    func updateDb(forThread threadName: String, with message: [String: String]){
+        let docRef = db.collection(K.FStore.messagesCollectionName).document(threadName)
+        docRef.getDocument { (documentSnapshot, error) in
+            if let e = error {
+                print("There as an issue in saving message to firestore: \(e.localizedDescription)")
+            } else {
+                if let document = documentSnapshot, document.exists {
+                    docRef.updateData(["conversation" : FieldValue.arrayUnion([message])]) { (error) in
+                        if let e = error {
+                            print("There was an issue in saving message to firestore: \(e.localizedDescription)")
+                        }
                     }
+                } else {
+                    docRef.setData(["conversation" : [message]])
                 }
             }
         }
+    }
+    
+    func sendMessage() {
+        if let messageBody = messageTextfield.text, let messageSender = Auth.auth().currentUser?.email {
+            let message: [String: String] = [
+                "sender": messageSender,
+                "body": messageBody,
+                "dateSent": "\(Date().timeIntervalSince1970)"
+            ]
+            
+            let senderThreadName = "\(messageSender)-\(recipient)"
+            updateDb(forThread: senderThreadName, with: message)
+            
+            let recipientThread = "\(recipient)-\(messageSender)"
+            updateDb(forThread: recipientThread, with: message)
+            
+        }
+    }
+    
+    @IBAction func sendPressed(_ sender: UIButton) {
+        sendMessage()
+        DispatchQueue.main.async {
+            self.messageTextfield.text = ""
+        }
+//        if let messageBody = messageTextfield.text, let messageSender = Auth.auth().currentUser?.email {
+//            db.collection(K.FStore.messagesCollectionName).addDocument(data: [
+//                K.FStore.senderField: messageSender,
+//                K.FStore.bodyField: messageBody,
+//                K.FStore.dateField: Date().timeIntervalSince1970
+//            ]) { (error) in
+//                if let e = error {
+//                    print("There was an issue saving data to firestore: \(e.localizedDescription)")
+//                } else {
+//
+//                    print("Successfully saved data.")
+//
+//                    DispatchQueue.main.async {
+//                        self.messageTextfield.text = ""
+//                    }
+//                }
+//            }
+//        }
     }
     
     @IBAction func logOutPressed(_ sender: UIBarButtonItem) {

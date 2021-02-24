@@ -30,5 +30,6 @@ struct K {
         static let bodyField = "body"
         static let dateField = "date"
         static let userField = "user"
+        static let conversationField = "conversations"
     }
 }
