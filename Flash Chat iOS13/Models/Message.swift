@@ -9,7 +9,10 @@
 import Foundation
 
 struct Message {
-    let sender: String
+    
     let body: String
-    let sentDate: Double
+    let dateSent: String
+    let sender: String
+    
+    
 }

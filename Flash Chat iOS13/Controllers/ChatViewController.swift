@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import FirebaseFirestoreSwift
 
 class ChatViewController: UIViewController {
     
@@ -38,60 +39,98 @@ class ChatViewController: UIViewController {
             let currentThread = "\(currentUser)-\(recipient)"
             let docRef = db.collection(K.FStore.messagesCollectionName).document(currentThread)
             
-            docRef.getDocument { (document, error) in
-                if let document = document, document.exists {
-                    let dataDescription = document.data()
-                    print("Document data: \(dataDescription!)")
-                } else {
-                    print("Document does not exist")
+            docRef.addSnapshotListener { (_, error) in
+                docRef.getDocument { (document, error) in
+                    self.messages = []
+                    if let e = error {
+                        print("There was an issue retrieving data from Firestore: \(e.localizedDescription)")
+                    } else {
+                        if let document = document, document.exists {
+                            
+                            if let data = document.data(){
+                                //print("Document data: \(data)")
+                                if let conversations = data[K.FStore.conversationField] as? [[String: String]] {
+                                    for convo in conversations {
+                                        if let senderFromFs = convo[K.FStore.senderField], let bodyFromFs = convo[K.FStore.bodyField], let dateFromFs = convo[K.FStore.dateField] {
+                                            let newMessage = Message(body: bodyFromFs, dateSent: dateFromFs, sender: senderFromFs)
+                                            self.messages.append(newMessage)
+                                            
+                                            
+                                        }
+                                    }
+                                    DispatchQueue.main.async {
+                                        self.tableView.reloadData()
+                                        let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+                                        self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
+                                    }
+                                }
+                                
+                                
+                                
+                            }
+                        } else {
+                            print("Document does not exist")
+                        }
+                    }
+                    
                 }
             }
+            
         }
         
     }
     
-    func loadMessages() {
-        db.collection(K.FStore.messagesCollectionName)
-            .order(by: K.FStore.dateField)
-            .addSnapshotListener { (querySnapshot, error) in
-                
-            self.messages = []
-            if let e = error {
-                print("There was an issue retrieving data from Firestore: \(e.localizedDescription)")
-            } else {
-                if let snapshotDocs = querySnapshot?.documents {
-                    for doc in snapshotDocs {
-                        let data = doc.data()
-                        if let senderFromFs = data[K.FStore.senderField] as? String, let bodyFromFs = data[K.FStore.bodyField] as? String {
-//                            let newMessage = Message(sender: senderFromFs, body: bodyFromFs)
-//                            self.messages.append(newMessage)
-                            
-                            DispatchQueue.main.async {
-                                self.tableView.reloadData()
-                                let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
-                                self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    func loadMessages() {
+//        db.collection(K.FStore.messagesCollectionName)
+//            .order(by: K.FStore.dateField)
+//            .addSnapshotListener { (querySnapshot, error) in
+//                
+//                self.messages = []
+//                if let e = error {
+//                    print("There was an issue retrieving data from Firestore: \(e.localizedDescription)")
+//                } else {
+//                    if let snapshotDocs = querySnapshot?.documents {
+//                        for doc in snapshotDocs {
+//                            let data = doc.data()
+//                            if let senderFromFs = data[K.FStore.senderField] as? String, let bodyFromFs = data[K.FStore.bodyField] as? String {
+//                                //                            let newMessage = Message(sender: senderFromFs, body: bodyFromFs)
+//                                //                            self.messages.append(newMessage)
+//                                
+//                                DispatchQueue.main.async {
+//                                    self.tableView.reloadData()
+//                                    let indexPath = IndexPath(row: self.messages.count - 1, section: 0)
+//                                    self.tableView.scrollToRow(at: indexPath, at: .top, animated: false)
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//    }
     
-    func updateDb(forThread threadName: String, with message: [String: String]){
+    func updateDb(forThread threadName: String, with message: [String:String]){
         let docRef = db.collection(K.FStore.messagesCollectionName).document(threadName)
         docRef.getDocument { (documentSnapshot, error) in
             if let e = error {
                 print("There as an issue in saving message to firestore: \(e.localizedDescription)")
             } else {
                 if let document = documentSnapshot, document.exists {
-                    docRef.updateData(["conversation" : FieldValue.arrayUnion([message])]) { (error) in
+                    docRef.updateData([K.FStore.conversationField : FieldValue.arrayUnion([message])]) { (error) in
                         if let e = error {
-                            print("There was an issue in saving message to firestore: \(e.localizedDescription)")
+                            print("Something went wrong: \(e.localizedDescription)")
+                        } else {
+                            print("Updated successfully")
                         }
                     }
                 } else {
-                    docRef.setData(["conversation" : [message]])
+                    docRef.setData([K.FStore.conversationField : [message]]) { (error) in
+                        if let e = error {
+                            print("Something went wrong: \(e.localizedDescription)")
+                        } else {
+                            print("Save successfully")
+                        }
+                    }
+                    
                 }
             }
         }
@@ -99,10 +138,12 @@ class ChatViewController: UIViewController {
     
     func sendMessage() {
         if let messageBody = messageTextfield.text, let messageSender = Auth.auth().currentUser?.email {
+            
+            //let message = Message(body: messageBody, dateSent: Date().timeIntervalSince1970, sender: messageSender)
             let message: [String: String] = [
-                "sender": messageSender,
-                "body": messageBody,
-                "dateSent": "\(Date().timeIntervalSince1970)"
+                K.FStore.bodyField : messageBody,
+                K.FStore.dateField : "\(Date().timeIntervalSince1970)",
+                K.FStore.senderField : messageSender
             ]
             
             let senderThreadName = "\(messageSender)-\(recipient)"
@@ -119,24 +160,24 @@ class ChatViewController: UIViewController {
         DispatchQueue.main.async {
             self.messageTextfield.text = ""
         }
-//        if let messageBody = messageTextfield.text, let messageSender = Auth.auth().currentUser?.email {
-//            db.collection(K.FStore.messagesCollectionName).addDocument(data: [
-//                K.FStore.senderField: messageSender,
-//                K.FStore.bodyField: messageBody,
-//                K.FStore.dateField: Date().timeIntervalSince1970
-//            ]) { (error) in
-//                if let e = error {
-//                    print("There was an issue saving data to firestore: \(e.localizedDescription)")
-//                } else {
-//
-//                    print("Successfully saved data.")
-//
-//                    DispatchQueue.main.async {
-//                        self.messageTextfield.text = ""
-//                    }
-//                }
-//            }
-//        }
+        //        if let messageBody = messageTextfield.text, let messageSender = Auth.auth().currentUser?.email {
+        //            db.collection(K.FStore.messagesCollectionName).addDocument(data: [
+        //                K.FStore.senderField: messageSender,
+        //                K.FStore.bodyField: messageBody,
+        //                K.FStore.dateField: Date().timeIntervalSince1970
+        //            ]) { (error) in
+        //                if let e = error {
+        //                    print("There was an issue saving data to firestore: \(e.localizedDescription)")
+        //                } else {
+        //
+        //                    print("Successfully saved data.")
+        //
+        //                    DispatchQueue.main.async {
+        //                        self.messageTextfield.text = ""
+        //                    }
+        //                }
+        //            }
+        //        }
     }
     
     @IBAction func logOutPressed(_ sender: UIBarButtonItem) {
