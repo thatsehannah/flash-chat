@@ -11,16 +11,19 @@ import Firebase
 
 class AllUsersViewController: UIViewController {
     
+    @IBOutlet weak var tableView: UITableView!
+    
     let db = Firestore.firestore()
     var currentUser: String = ""
+    var selectedUser: String = ""
     var users: [String] = []
-    @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "All Users"
         print("User View Controller Loaded.")
         tableView.dataSource = self
+        tableView.delegate = self
         
         loadAllUsers(currentUser)
     }
@@ -33,6 +36,11 @@ class AllUsersViewController: UIViewController {
         } catch let signOutError as NSError {
             print ("Error signing out: %@", signOutError)
         }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destinationVC = segue.destination as! ChatViewController
+        destinationVC.recipient = selectedUser
     }
     
     func loadAllUsers(_ currentUser: String){
@@ -70,4 +78,11 @@ extension AllUsersViewController: UITableViewDataSource {
     }
     
     
+}
+
+extension AllUsersViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectedUser = users[indexPath.row]
+        performSegue(withIdentifier: K.userSegue, sender: self)
+    }
 }

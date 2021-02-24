@@ -392,9 +392,6 @@
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
-                                        <connections>
-                                            <segue destination="lwd-AH-u8E" kind="show" id="bhr-75-yb6"/>
-                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
@@ -417,6 +414,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="tableView" destination="YVY-Me-fSD" id="Ivx-jo-rxz"/>
+                        <segue destination="lwd-AH-u8E" kind="show" identifier="UserToChat" id="YZC-dk-w7s"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="B9x-aR-uyL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -425,7 +423,9 @@
         </scene>
     </scenes>
     <designables>
-        <designable name="y7D-jv-BlJ"/>
+        <designable name="y7D-jv-BlJ">
+            <size key="intrinsicContentSize" width="307.5" height="60"/>
+        </designable>
     </designables>
     <inferredMetricsTieBreakers>
         <segue reference="rNL-4L-UWe"/>

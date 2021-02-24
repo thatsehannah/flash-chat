@@ -16,18 +16,20 @@ class ChatViewController: UIViewController {
     
     let db = Firestore.firestore()
     
+    var recipient: String = ""
     var messages: [Message] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = K.appName
+        title = recipient
         tableView.dataSource = self
-//        navigationItem.hidesBackButton = true
         tableView.register(UINib(nibName: K.cellNibName, bundle: nil), forCellReuseIdentifier: K.chatCellIdentifier)
+        print("Recipient: \(recipient)")
         
         loadMessages()
         
+        //        navigationItem.hidesBackButton = true
     }
     
     func loadMessages() {
