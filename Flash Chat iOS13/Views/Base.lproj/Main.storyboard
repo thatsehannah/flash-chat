@@ -409,7 +409,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="Uap-Og-dAf">
-                        <barButtonItem key="rightBarButtonItem" title="Logout" id="BIa-c6-Hro"/>
+                        <barButtonItem key="rightBarButtonItem" title="Logout" id="BIa-c6-Hro">
+                            <connections>
+                                <action selector="logoutPressed:" destination="PRX-ka-gt5" id="LIU-dD-uHu"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="B9x-aR-uyL" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
