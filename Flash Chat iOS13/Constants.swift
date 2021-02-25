@@ -25,11 +25,9 @@ struct K {
     struct FStore {
         static let messagesCollectionName = "messages"
         static let usersCollectionName = "users"
-        static let usersDocument = "allusers"
         static let senderField = "sender"
         static let bodyField = "body"
         static let dateField = "dateSent"
-        static let userField = "user"
         static let conversationField = "conversations"
     }
 }

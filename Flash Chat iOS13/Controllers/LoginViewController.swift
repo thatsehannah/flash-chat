@@ -31,9 +31,6 @@ class LoginViewController: UIViewController {
         if let email = emailTextfield.text {
             let destinationVC = segue.destination as! AllUsersViewController
             destinationVC.currentUser = email
-            print("Preparing login for segue...")
-            
         }
     }
-    
 }

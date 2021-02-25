@@ -21,7 +21,6 @@ class AllUsersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "All Users"
-        print("User View Controller Loaded.")
         tableView.dataSource = self
         tableView.delegate = self
         
@@ -56,7 +55,6 @@ class AllUsersViewController: UIViewController {
                     }
                     
                     DispatchQueue.main.async {
-                        print("Reloading table data...")
                         self.tableView.reloadData()
                     }
                 }
@@ -76,8 +74,6 @@ extension AllUsersViewController: UITableViewDataSource {
         cell.textLabel?.text = user
         return cell
     }
-    
-    
 }
 
 extension AllUsersViewController: UITableViewDelegate {
